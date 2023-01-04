@@ -1,0 +1,91 @@
+HELLO Its My first Assignment as a part of Ineuron FSDA 2.0 
+
+Here is the Code-/
+use database DEMO;
+USE SCHEMA PUBLIC;
+-----1st Question is to Load table and create Primary Key
+----- In these I Have Assigned Primary as a Order_date.
+
+CREATE OR REPLACE TABLE BHARAT_SALES_DATA
+(order_id VARCHAR(20),
+order_date string PRIMARY KEY,                  /In these I Have Assigned Primary as a Order_date.
+ship_date string,
+ship_mode CHAR(15),
+customer_name VARCHAR(25),
+segment CHAR(12),
+state VARCHAR(150),
+country VARCHAR(35),                      //I I have taken these csv file from the csv World website.
+market CHAR(7),
+region CHAR(15),
+product_id CHAR(20),
+category CHAR(16),
+sub_category CHAR(15),
+product_name STRING,
+sales number(6,0),
+quantity INT,
+discount float,
+profit float,
+shipping_cost float,
+order_priority CHAR(8),
+year CHAR(4)
+);
+
+DESCRIBE TABLE BHARAT_SALES_DATA;
+SELECT*FROM KI_SALES_DATA;            
+
+--------2 Question is to Change the Primary key to Order Id Column.
+
+ALTER TABLE BHARAT_SALES_DATA
+DROP PRIMARY KEY;
+
+ALTER TABLE BHARAT_SALES_DATA
+ADD PRIMARY KEY(ORDER_ID);    -----Here I have Changed the Primary Key of the Table to  ORDER_ID as it Was First Order_date
+
+---3rd Question Extract The Last Number After the  - And Create Other Column and Update it
+Update BHARAT_SALES_DATA
+SET ORDER_DATE=CAST(ORDER_DATE AS DATE);
+
+Update BHARAT_SALES_DATA
+SET SHIP_DATE=TO_CHAR(DATE(SHIP_DATE,'DD-MM-YYYY'),'YYYY-MM-DD')
+
+
+---------4. Create a new column called order_extract and extract the number after the last ‘–‘from Order ID column..
+
+CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
+SELECT*, REGEXP_SUBSTR(ORDER_ID,'[[:digit:]]+',1,2) AS ORDER_EXTRACT
+from BHARAT_SALES_DATA;
+
+--------5.Create a new column called Discount Flag and categorize it based on discount. Use ‘Yes’ if the discount is greater than zero else ‘No’.
+CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
+SELECT *,
+CASE
+WHEN DISCOUNT>0 THEN 'Yes'
+ELSE 'NO'
+END AS DISCOUNT_FLAG
+FROM BHARAT_SALES_DATA;
+
+---------6. Create a new column called process days and calculate how many days it takes for each order id to process from the order to its shipment.
+
+	CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
+	SELECT*,
+	DATEDIFF('days',ORDER_DATE,SHIP_DATE) as PROCESS_DAYS
+	FROM BHARAT_SALES_DATA;
+
+-----		-------7. FLAG THE PROCESS DAY AS BY RATING IF IT TAKES LESS OR EQUAL 3 DAYS MAKE 5,LESS OR EQUAL THAN 6 DAYS BUT MORE THAN 3 MAKE 4,LESS THAN 10 BUT MORE THAN 6 MAKE 3,MORE THAN 10 MAKE IT 2 FOR EVERY ORDER ID
+		
+		CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
+		SELECT*, 
+		CASE
+		WHEN PROCESS_DAYS <=3 THEN 5
+		WHEN PROCESS_DAYS BETWEEN 4 AND 6 THEN 4
+		WHEN PROCESS_DAYS BETWEEN 7 AND 10 THEN 3
+		ELSE 2
+		END AS RATING
+		FROM BHARAT_SALES_DATA;
+
+
+
+
+
+
+
