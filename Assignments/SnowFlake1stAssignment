@@ -52,12 +52,12 @@ SET SHIP_DATE=TO_CHAR(DATE(SHIP_DATE,'DD-MM-YYYY'),'YYYY-MM-DD')
 ---------4. Create a new column called order_extract and extract the number after the last ‘–‘from Order ID column..
 
 CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
-SELECT*, REGEXP_SUBSTR(ORDER_ID,'[[:digit:]]+',1,2) AS ORDER_EXTRACT
+SELECT* REGEXP_SUBSTR(ORDER_ID,'[[:digit:]]+',1,2) AS ORDER_EXTRACT
 from BHARAT_SALES_DATA;
 
 --------5.Create a new column called Discount Flag and categorize it based on discount. Use ‘Yes’ if the discount is greater than zero else ‘No’.
 CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
-SELECT *,
+SELECT *
 CASE
 WHEN DISCOUNT>0 THEN 'Yes'
 ELSE 'NO'
@@ -67,14 +67,14 @@ FROM BHARAT_SALES_DATA;
 ---------6. Create a new column called process days and calculate how many days it takes for each order id to process from the order to its shipment.
 
 	CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
-	SELECT*,
+	SELECT*
 	DATEDIFF('days',ORDER_DATE,SHIP_DATE) as PROCESS_DAYS
 	FROM BHARAT_SALES_DATA;
 
 -----		-------7. FLAG THE PROCESS DAY AS BY RATING IF IT TAKES LESS OR EQUAL 3 DAYS MAKE 5,LESS OR EQUAL THAN 6 DAYS BUT MORE THAN 3 MAKE 4,LESS THAN 10 BUT MORE THAN 6 MAKE 3,MORE THAN 10 MAKE IT 2 FOR EVERY ORDER ID
 		
 		CREATE OR REPLACE TABLE BHARAT_SALES_DATA AS
-		SELECT*, 
+		SELECT*
 		CASE
 		WHEN PROCESS_DAYS <=3 THEN 5
 		WHEN PROCESS_DAYS BETWEEN 4 AND 6 THEN 4
